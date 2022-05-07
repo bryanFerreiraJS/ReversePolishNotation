@@ -1,14 +1,14 @@
 <template>
-  <div :class="`grid grid-rows-${rows} grid-cols-${cols} gap-${gap}`">
+  <div :class='`grid grid-rows-${rows} grid-cols-${cols} gap-${gap}`'>
     <slot></slot>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang='ts'>
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: "Grid",
+  name: 'Grid',
   props: {
     rows: { type: [String, Number], required: true },
     cols: { type: [String, Number], required: true },
