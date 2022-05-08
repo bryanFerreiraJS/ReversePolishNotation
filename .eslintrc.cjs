@@ -15,7 +15,6 @@ module.exports = {
     'eol-last': ['error', 'always'],
     'semi': 'error',
     'quotes': ['error', 'single', { 'avoidEscape': true }],
-    'vue/html-quotes': [ 'error', 'double', { 'avoidEscape': true }],
-    '@typescript-eslint/no-non-null-assertion': 'off'
+    'vue/html-quotes': [ 'error', 'double', { 'avoidEscape': true }]
   },
 };

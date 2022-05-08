@@ -22,7 +22,7 @@ export function useCalculate() {
     if (!memory.value.length) return;
 
     function lengthOfLastExpression(string: string): number {
-      const lastExpression = string.split(' ').pop()!;
+      const lastExpression = string.split(' ').pop() as string;
       return lastExpression === '' ? 1 : lastExpression.length;
     }
 
@@ -108,16 +108,16 @@ export function useCalculate() {
                 stack[stack.length - 1] *= -1;
                 break;
               case '+':
-                stack[stack.length - 2] += stack.pop()!;
+                stack[stack.length - 2] += stack.pop() as number;
                 break;
               case '-':
-                stack[stack.length - 2] -= stack.pop()!;
+                stack[stack.length - 2] -= stack.pop() as number;
                 break;
               case '*':
-                stack[stack.length - 2] *= stack.pop()!;
+                stack[stack.length - 2] *= stack.pop() as number;
                 break;
               case '/':
-                stack[stack.length - 2] /= stack.pop()!;
+                stack[stack.length - 2] /= stack.pop() as number;
                 break;
             }
           } else {
@@ -134,7 +134,7 @@ export function useCalculate() {
         throw new Error('Input error');
       }
 
-      const result = reducedStack.pop()!;
+      const result = reducedStack.pop() as number;
 
       memory.value = `${result % 1 ? returnTrueValueOfFloat(result) : result}`;
     } catch (err) {
