@@ -1,14 +1,15 @@
 <template>
   <button
-    :class='classes'
-    class='sm:h-24 p-4 rounded-lg focus:outline-none active:bg-gray-400'
+    :class="classes"
+    class="sm:h-24 p-4 rounded-lg focus:outline-none active:bg-gray-400"
   >
-    <slot></slot>
+    <slot />
   </button>
 </template>
 
 <script lang='ts'>
-import { defineComponent, PropType } from 'vue';
+import type { PropType } from 'vue';
+import { defineComponent } from 'vue';
 
 type IVariant = 'yellow' | 'blue' | 'green' | 'red';
 
@@ -17,7 +18,7 @@ type IVariantsClasses = {
 };
 
 export default defineComponent({
-  name: 'Button',
+  name: 'ButtonComponent',
   props: {
     variant: { type: String as PropType<IVariant>, default: 'blue' },
   },

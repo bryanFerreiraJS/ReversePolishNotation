@@ -1,9 +1,10 @@
-import { ref, readonly, Ref } from 'vue';
-import { OPERATORS, DIGITS } from '../shared/constants';
+import type { Ref } from 'vue';
+import { ref, readonly } from 'vue';
+import { OPERATORS, DIGITS } from '@/shared/constants';
 
 export function useCalculate() {
-  let memory: Ref<string> = ref('');
-  let error: Ref<boolean> = ref(false);
+  const memory: Ref<string> = ref('');
+  const error: Ref<boolean> = ref(false);
 
   function lastDigit(string: string): string {
     return string[string.length - 1];
@@ -27,7 +28,7 @@ export function useCalculate() {
 
     memory.value = memory.value.slice(
       0,
-      memory.value.length - lengthOfLastExpression(memory.value),
+      memory.value.length - lengthOfLastExpression(memory.value)
     );
   }
 
@@ -85,45 +86,48 @@ export function useCalculate() {
     const splitMemory: (string | number)[] = memory.value
       .trim()
       .split(' ')
-      .map(el => parseFloat(el) || el);
+      .map((el) => parseFloat(el) || el);
 
     try {
-      const reducedStack = splitMemory.reduce((stack: number[], currentValue: string | number) => {
-        if (typeof currentValue === 'string') {
-          /**
-           * Occurs only if other operator than NEGATE is added to the stack when only one number is stored
-           * (or if NEGATE is added to the stack when the stack is empty)
-           */
-          if (
-            (currentValue !== 'NEGATE' && stack.length < 2) ||
-            (currentValue === 'NEGATE' && !stack.length)
-          ) {
-            throw new Error('Input error');
+      const reducedStack = splitMemory.reduce(
+        (stack: number[], currentValue: string | number) => {
+          if (typeof currentValue === 'string') {
+            /**
+             * Occurs only if other operator than NEGATE is added to the stack when only one number is stored
+             * (or if NEGATE is added to the stack when the stack is empty)
+             */
+            if (
+              (currentValue !== 'NEGATE' && stack.length < 2) ||
+              (currentValue === 'NEGATE' && !stack.length)
+            ) {
+              throw new Error('Input error');
+            }
+
+            switch (currentValue) {
+              case 'NEGATE':
+                stack[stack.length - 1] *= -1;
+                break;
+              case '+':
+                stack[stack.length - 2] += stack.pop()!;
+                break;
+              case '-':
+                stack[stack.length - 2] -= stack.pop()!;
+                break;
+              case '*':
+                stack[stack.length - 2] *= stack.pop()!;
+                break;
+              case '/':
+                stack[stack.length - 2] /= stack.pop()!;
+                break;
+            }
+          } else {
+            stack.push(currentValue);
           }
 
-          switch (currentValue) {
-            case 'NEGATE':
-              stack[stack.length - 1] *= -1;
-              break;
-            case '+':
-              stack[stack.length - 2] += stack.pop()!;
-              break;
-            case '-':
-              stack[stack.length - 2] -= stack.pop()!;
-              break;
-            case '*':
-              stack[stack.length - 2] *= stack.pop()!;
-              break;
-            case '/':
-              stack[stack.length - 2] /= stack.pop()!;
-              break;
-          }
-        } else {
-          stack.push(currentValue);
-        }
-
-        return stack;
-      }, []);
+          return stack;
+        },
+        []
+      );
 
       // Occurs only when the number of operands is strictly greater than (the number of operators except NEGATE + 1)
       if (reducedStack.length !== 1) {

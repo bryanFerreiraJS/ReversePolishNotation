@@ -7,11 +7,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import Calculator from "./components/Calculator.vue";
+import { defineComponent } from 'vue';
+import Calculator from './components/CalculatorComponent.vue';
 
 export default defineComponent({
-  name: "App",
+  name: 'App',
   components: { Calculator },
 });
 </script>

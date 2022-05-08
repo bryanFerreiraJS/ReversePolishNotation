@@ -1,6 +1,6 @@
 <template>
-  <div :class='`grid grid-rows-${rows} grid-cols-${cols} gap-${gap}`'>
-    <slot></slot>
+  <div :class="`grid grid-rows-${rows} grid-cols-${cols} gap-${gap}`">
+    <slot />
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'Grid',
+  name: 'GridComponent',
   props: {
     rows: { type: [String, Number], required: true },
     cols: { type: [String, Number], required: true },
