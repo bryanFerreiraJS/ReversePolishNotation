@@ -82,6 +82,47 @@ describe('useCalculate', () => {
     expect(memory.value).toEqual('8');
   });
 
+  it('should prevent to add multiple dots in sequence', () => {
+    // GIVEN
+    const { addDigit, memory } = useCalculate();
+
+    // WHEN
+    addMultiplesDigits('0...1', addDigit);
+
+    // THEN
+    expect(memory.value).toEqual('0.1');
+  });
+
+  it('should prevent to add multiple spaces in sequence', () => {
+    // GIVEN
+    const { addDigit, addSpace, memory } = useCalculate();
+
+    // WHEN
+    addDigit('8');
+    addSpace();
+    addSpace();
+    addSpace();
+    addSpace();
+    addDigit('6');
+
+    // THEN
+    expect(memory.value).toEqual('8 6');
+  });
+
+  it('should prevent to add digit if space is not present', () => {
+    // GIVEN
+    const { addDigit, addSpace, addOperator, memory } = useCalculate();
+
+    // WHEN
+    addDigit('8');
+    addSpace();
+    addOperator('+');
+    addDigit('1');
+
+    // THEN
+    expect(memory.value).toEqual('8 +');
+  });
+
   it('should delete last digit or operator correctly', () => {
     // GIVEN
     const { addOperator, addDigit, addSpace, addNegate, eraseLast, memory } = useCalculate();
@@ -154,7 +195,7 @@ describe('useCalculate', () => {
     expect(memory.value).toEqual('');
   });
 
-  it("should clear memory", () => {
+  it('should clear memory', () => {
     // GIVEN
     const { clear, addOperator, addDigit, addSpace, memory } = useCalculate();
 
@@ -168,6 +209,44 @@ describe('useCalculate', () => {
 
     // THEN
     expect(memory.value).toEqual('');
+  });
+
+  describe('should clear memory after an input error when user clicks on a ', () => {
+    it('digit button', () => {
+      // GIVEN
+      const { addDigit, addSpace, calculateResult, memory, error } = useCalculate();
+
+      // WHEN
+      addDigit('2');
+      addSpace();
+      addDigit('4');
+      calculateResult();
+      expect(memory.value).toBe('');
+      expect(error.value).toBe(true);
+      addDigit('2');
+
+      // THEN
+      expect(memory.value).toBe('2');
+      expect(error.value).toBe(false);
+    });
+
+    it('operator button', () => {
+      // GIVEN
+      const { addDigit, addOperator, addSpace, calculateResult, memory, error } = useCalculate();
+
+      // WHEN
+      addDigit('2');
+      addSpace();
+      addDigit('4');
+      calculateResult();
+      expect(memory.value).toBe('');
+      expect(error.value).toBe(true);
+      addOperator('+');
+
+      // THEN
+      expect(memory.value).toBe('');
+      expect(error.value).toBe(false);
+    });
   });
 
   it('should throws a error when calls addDigit passing a non digit', () => {

@@ -5,11 +5,6 @@ export function useCalculate() {
   let memory: Ref<string> = ref('');
   let error: Ref<boolean> = ref(false);
 
-  function lengthOfLastExpression(string: string): number {
-    const lastExpression = string.split(' ').pop();
-    return lastExpression === '' ? 1 : lastExpression?.length || 0;
-  }
-
   function lastDigit(string: string): string {
     return string[string.length - 1];
   }
@@ -24,6 +19,11 @@ export function useCalculate() {
 
   function eraseLast(): void {
     if (!memory.value.length) return;
+
+    function lengthOfLastExpression(string: string): number {
+      const lastExpression = string.split(' ').pop()!;
+      return lastExpression === '' ? 1 : lastExpression.length;
+    }
 
     memory.value = memory.value.slice(
       0,
