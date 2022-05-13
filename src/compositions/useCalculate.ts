@@ -5,6 +5,14 @@ import { OPERATORS, DIGITS } from '@/shared/constants';
 export function useCalculate() {
   const memory: Ref<string> = ref('');
   const error: Ref<boolean> = ref(false);
+  const resultDisplayed: Ref<boolean> = ref(false);
+
+  function clearBeforeNewCalculation() : void {
+    if (resultDisplayed.value) {
+      clear();
+      resultDisplayed.value = false;
+    }
+  }
 
   function lastDigit(string: string): string {
     return string[string.length - 1];
@@ -26,6 +34,8 @@ export function useCalculate() {
       return lastExpression === '' ? 1 : lastExpression.length;
     }
 
+    clearBeforeNewCalculation();
+
     memory.value = memory.value.slice(
       0,
       memory.value.length - lengthOfLastExpression(memory.value)
@@ -44,6 +54,8 @@ export function useCalculate() {
 
     if (error.value) clear();
 
+    clearBeforeNewCalculation();
+
     if (lastDigit(memory.value) === '.' && digit === '.') return;
 
     if (isOperator(lastDigit(memory.value))) return;
@@ -58,18 +70,24 @@ export function useCalculate() {
 
     if (error.value) clear();
 
+    clearBeforeNewCalculation();
+
     if (!memory.value || lastDigit(memory.value) !== ' ') return;
 
     memory.value += operator;
   }
 
   function addSpace(): void {
+    clearBeforeNewCalculation();
+
     if (lastDigit(memory.value) === ' ') return;
 
     memory.value += ' ';
   }
 
   function addNegate(): void {
+    clearBeforeNewCalculation();
+
     if (!memory.value || lastDigit(memory.value) !== ' ') return;
 
     memory.value += 'NEGATE';
@@ -94,7 +112,7 @@ export function useCalculate() {
           if (typeof currentValue === 'string') {
             /**
              * Occurs only if other operator than NEGATE is added to the stack when only one number is stored
-             * (or if NEGATE is added to the stack when the stack is empty)
+             * (or if NEGATE is added to the stack when the stack is empty).
              */
             if (
               (currentValue !== 'NEGATE' && stack.length < 2) ||
@@ -129,7 +147,9 @@ export function useCalculate() {
         []
       );
 
-      // Occurs only when the number of operands is strictly greater than (the number of operators except NEGATE + 1)
+      /** Occurs only when the number of operands is strictly greater than (the number of operators except NEGATE + 1)
+       *  or when user try to divide by zero.
+       */
       if (reducedStack.length !== 1) {
         throw new Error('Input error');
       }
@@ -137,6 +157,7 @@ export function useCalculate() {
       const result = reducedStack.pop() as number;
 
       memory.value = `${result % 1 ? returnTrueValueOfFloat(result) : result}`;
+      resultDisplayed.value = true;
     } catch (err) {
       error.value = true;
       memory.value = '';

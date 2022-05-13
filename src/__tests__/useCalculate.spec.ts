@@ -214,6 +214,17 @@ describe('useCalculate', () => {
     expect(memory.value).toEqual('');
   });
 
+  it('should do nothing when useCalculate is triggered and memory is empty', () => {
+    // GIVEN
+    const { calculateResult, memory } = useCalculate();
+
+    // WHEN
+    calculateResult();
+
+    // THEN
+    expect(memory.value).toBe('');
+  });
+
   describe('should clear memory after an input error when user clicks on a ', () => {
     it('digit button', () => {
       // GIVEN
@@ -485,6 +496,24 @@ describe('useCalculate', () => {
     });
   });
 
+  it('should clear the memory before entering a new calculation ', () => {
+    // GIVEN
+    const { addOperator, addDigit, addSpace, calculateResult, memory } =
+        useCalculate();
+
+    // WHEN
+    addDigit('2');
+    addSpace();
+    addDigit('1');
+    addSpace();
+    addOperator('-');
+    calculateResult();
+    addDigit('2');
+
+    // THEN
+    expect(memory.value).toBe('2');
+  });
+
   describe('should set error to true when calls calculate result with invalid math expression like ', () => {
     it('2 4', () => {
       // GIVEN
@@ -562,11 +591,10 @@ describe('useCalculate', () => {
   describe('should prevent some obvious input errors like ', () => {
     it('NEGATE', () => {
       // GIVEN
-      const { addNegate, calculateResult, memory } = useCalculate();
+      const { addNegate, memory } = useCalculate();
 
       // WHEN
       addNegate();
-      calculateResult();
 
       // THEN
       expect(memory.value).toBe('');
@@ -574,32 +602,28 @@ describe('useCalculate', () => {
 
     it('+, -, * or /', () => {
       // GIVEN
-      const { addOperator, calculateResult, memory } = useCalculate();
+      const { addOperator, memory } = useCalculate();
 
       // WHEN
       addOperator('+');
-      calculateResult();
 
       // THEN
       expect(memory.value).toBe('');
 
       // WHEN
       addOperator('-');
-      calculateResult();
 
       // THEN
       expect(memory.value).toBe('');
 
       // WHEN
       addOperator('*');
-      calculateResult();
 
       // THEN
       expect(memory.value).toBe('');
 
       // WHEN
       addOperator('/');
-      calculateResult();
 
       // THEN
       expect(memory.value).toBe('');
